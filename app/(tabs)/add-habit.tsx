@@ -1,9 +1,8 @@
-import { DATABASE_ID, databases, HABITS_COLLECTION_ID } from "@/lib/appwrite";
 import { useAuth } from "@/lib/auth-context";
+import { useCreateHabit } from "@/lib/queries";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { ID } from "react-native-appwrite";
 import {
     Button,
     SegmentedButtons,
@@ -14,33 +13,28 @@ import {
 
 const FREQUENCIES = ["daily", "weekly", "monthly"];
 type Frequency = (typeof FREQUENCIES)[number];
+
 export default function AddHabitScreen() {
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [frequency, setFrequency] = useState<Frequency>("daily");
     const [error, setError] = useState<string>("");
+
     const { user } = useAuth();
     const router = useRouter();
     const theme = useTheme();
+    const createHabit = useCreateHabit();
 
     const handleSubmit = async () => {
         if (!user) return;
 
         try {
-            await databases.createDocument(
-                DATABASE_ID,
-                HABITS_COLLECTION_ID,
-                ID.unique(),
-                {
-                    user_id: user.$id,
-                    title,
-                    description,
-                    frequency,
-                    streak_count: 0,
-                    last_completed: new Date().toISOString(),
-                    created_at: new Date().toISOString(),
-                }
-            );
+            await createHabit.mutateAsync({
+                user_id: user.$id,
+                title,
+                description,
+                frequency,
+            });
 
             router.back();
         } catch (error) {
@@ -50,6 +44,10 @@ export default function AddHabitScreen() {
             }
 
             setError("There was an error creating the habit");
+        } finally {
+            setTitle("");
+            setDescription("");
+            setFrequency("daily");
         }
     };
 
@@ -58,12 +56,14 @@ export default function AddHabitScreen() {
             <TextInput
                 label="Title"
                 mode="outlined"
+                value={title}
                 onChangeText={setTitle}
                 style={styles.input}
             />
             <TextInput
                 label="Description"
                 mode="outlined"
+                value={description}
                 onChangeText={setDescription}
                 style={styles.input}
             />

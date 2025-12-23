@@ -78,7 +78,7 @@ export default function StreaksScreen() {
                 HABITS_COLLECTION_ID,
                 [Query.equal("user_id", user?.$id ?? "")]
             );
-            setHabits(response.documents as Habit[]);
+            setHabits(response.documents as unknown as Habit[]);
         } catch (error) {
             console.error(error);
         }
@@ -91,7 +91,7 @@ export default function StreaksScreen() {
                 COMPLETIONS_COLLECTION_ID,
                 [Query.equal("user_id", user?.$id ?? "")]
             );
-            const completions = response.documents as HabitCompletion[];
+            const completions = response.documents as unknown as HabitCompletion[];
             setCompletedHabits(completions);
         } catch (error) {
             console.error(error);
@@ -159,14 +159,12 @@ export default function StreaksScreen() {
     return (
         <View style={styles.container}>
             <Text style={styles.title} variant="headlineSmall">
-                {" "}
                 Habit Streaks
             </Text>
 
             {rankedHabits.length > 0 && (
                 <View style={styles.rankingContainer}>
-                    {" "}
-                    <Text style={styles.rankingTitle}> 🏅 Top Streaks</Text>{" "}
+                    <Text style={styles.rankingTitle}> 🏅 Top Streaks</Text>
                     {rankedHabits.slice(0, 3).map((item, key) => (
                         <View key={key} style={styles.rankingRow}>
                             <View style={[styles.rankingBadge, badgeStyles[key]]}>
@@ -195,11 +193,9 @@ export default function StreaksScreen() {
                         >
                             <Card.Content>
                                 <Text variant="titleMedium" style={styles.habitTitle}>
-                                    {" "}
                                     {habit.title}
                                 </Text>
                                 <Text style={styles.habitDescription}>
-                                    {" "}
                                     {habit.description}
                                 </Text>
                                 <View style={styles.statsRow}>

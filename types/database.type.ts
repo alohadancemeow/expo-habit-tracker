@@ -7,7 +7,7 @@ export interface Habit extends Models.Document {
     frequency: string;
     streak_count: number;
     last_completed: string;
-    created_at: string;
+    // created_at: string;
 }
 
 export interface HabitCompletion extends Models.Document {

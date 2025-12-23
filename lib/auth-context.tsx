@@ -34,6 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    // Sign up a new user
     const signUp = async (email: string, password: string) => {
         try {
             await account.create(ID.unique(), email, password);
@@ -47,6 +48,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             return "An error occured during signup";
         }
     };
+
+    // Sign in an existing user
     const signIn = async (email: string, password: string) => {
         try {
             await account.createEmailPasswordSession(email, password);
@@ -62,6 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    // Sign out the current user
     const signOut = async () => {
         try {
             await account.deleteSession("current");
